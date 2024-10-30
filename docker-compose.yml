@@ -1,0 +1,15 @@
+services:
+  inner-relay:
+    container_name: inner-relay
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - "./users.json:/app/users.json"
+      - "./db:/app/db"
+    ports:
+      - "${EXPOSED_DOCKER_PORT}:${RELAY_PORT}"
+    restart: unless-stopped
+    init: true
