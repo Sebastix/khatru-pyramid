@@ -7,9 +7,16 @@ services:
     env_file:
       - .env
     volumes:
-      - "./users.json:/app/users.json"
-      - "./db:/app/db"
+      - ./users.json:/app/users.json
+      - db:/app/db
     ports:
       - "${EXPOSED_DOCKER_PORT}:${RELAY_PORT}"
     restart: unless-stopped
-    init: true
+
+volumes:
+  db:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./db
