@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - .env
+      - ./.env
     volumes:
       - ./.env:/app/.env
       - ./users.json:/app/users.json

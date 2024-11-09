@@ -21,7 +21,7 @@ import (
 )
 
 type Settings struct {
-	Port             string `envconfig:"PORT" default:"3334"`
+	Port             string `envconfig:"PORT" default:"3366"`
 	Domain           string `envconfig:"DOMAIN" required:"true"`
 	RelayName        string `envconfig:"RELAY_NAME" required:"true"`
 	RelayPubkey      string `envconfig:"RELAY_PUBKEY" required:"true"`
@@ -43,7 +43,7 @@ var (
 )
 
 func main() {
-	if err := godotenv.Load(".env"); err != nil {
+	if err := godotenv.Load("./.env"); err != nil {
 		log.Fatal().Err(err).Msg("Error loading .env file")
 		return
 	}

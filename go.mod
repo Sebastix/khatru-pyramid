@@ -5,6 +5,7 @@ go 1.23.1
 require (
 	github.com/fiatjaf/eventstore v0.13.0
 	github.com/fiatjaf/khatru v0.11.0
+	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/nbd-wtf/go-nostr v0.42.0
 	github.com/rs/zerolog v1.31.0
@@ -30,7 +31,6 @@ require (
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.4.0 // indirect
 	github.com/graph-gophers/dataloader/v7 v7.1.0 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/greatroar/blobloom v0.8.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect
