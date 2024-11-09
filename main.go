@@ -13,6 +13,7 @@ import (
 	"github.com/fiatjaf/khatru"
 	"github.com/fiatjaf/khatru/policies"
 	"github.com/kelseyhightower/envconfig"
+	"github.com/joho/godotenv"
 	"github.com/nbd-wtf/go-nostr"
 	"github.com/nbd-wtf/go-nostr/nip11"
 	"github.com/rs/zerolog"
@@ -42,6 +43,11 @@ var (
 )
 
 func main() {
+	if err := godotenv.Load(".env"); err != nil {
+		log.Fatal().Err(err).Msg("Error loading .env file")
+		return
+	}
+	s.Domain = os.Getenv("DOMAIN")
 	err := envconfig.Process("", &s)
 	if err != nil {
 		log.Fatal().Err(err).Msg("couldn't process envconfig")

@@ -39,7 +39,7 @@ func userRowComponent(ctx context.Context, profile sdk.ProfileMetadata, loggedUs
 }
 
 func userNameComponent(profile sdk.ProfileMetadata) HTMLComponent {
-	return A().Href("https://nosta.me/" + profile.Npub()).Target("_blank").Children(
+	return A().Href("https://njump.me/" + profile.Npub()).Target("_blank").Children(
 		Span(profile.ShortName()).Attr("title", profile.Npub()),
 	).Class("font-mono py-1")
 }

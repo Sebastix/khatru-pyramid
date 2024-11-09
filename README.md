@@ -1,6 +1,6 @@
 # Khatru Pyramid
 
-A relay based on [Khatru](https://github.com/fiatjaf/khatru) with a invite hierarchy feature.
+A relay based on [Khatru](https://github.com/fiatjaf/khatru) with an invite hierarchy feature.
 
 ### Deploy with docker
 
@@ -14,6 +14,19 @@ docker run \
     -e RELAY_PUBKEY="your nostr hex pubkey" \
     tijlxyz/khatru-pyramid:latest
 ```
+
+### Using Docker compose
+
+```shell
+docker compose build
+docker compose up 
+```
+
+You can now access the frontend of the relay at http://localhost:<EXPOSED_DOCKER_PORT>.
+
+### Nginx reverse proxy config
+
+@TODO
 
 ### Deploy with
 
@@ -35,6 +48,8 @@ Look at [example.env](./example.env) for all configuration options.
 You can also manually edit the `users.json` file. Do this only when the server is down.
 `users.json` is formatted as follows:
 ```json
-{ "[user_pubkey_hex]": "[invited_by_pubkey_hex]" }
+{ 
+  "[user_pubkey_hex]": "[invited_by_pubkey_hex]"
+}
 ```
 

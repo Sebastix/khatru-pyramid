@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/nbd-wtf/go-nostr/nip19"
 
 	"github.com/nbd-wtf/go-nostr"
 	. "github.com/theplant/htmlgo"
@@ -11,6 +12,11 @@ const buttonClass = "rounded-md text-sm font-semibold text-gray-900 shadow-sm ri
 
 func baseHTML(inside HTMLComponent) HTMLComponent {
 	navItemClass := "text-gray-600 hover:bg-gray-200 rounded-md px-3 py-2 font-medium"
+
+	npub, error := nip19.EncodePublicKey(s.RelayPubkey)
+	if error != nil {
+		log.Fatal().Err(error).Msg("Could not encode pubkey")
+	}
 
 	return HTML(
 		Head(
@@ -23,8 +29,12 @@ func baseHTML(inside HTMLComponent) HTMLComponent {
 		),
 		Body(
 			Div(
+				Img(s.RelayIcon).Class("mx-auto mb-4"),
 				H1(s.RelayName).Class("font-bold text-2xl"),
 				P().Text(s.RelayDescription).Class("text-lg"),
+				P(
+					A().Href("https://njump.me/" + npub).Text(npub).Class("hover:underline cursor-pointer text-blue-500").Target("_blank"),
+				),
 			).Class("mx-auto my-6 text-center"),
 			Nav(
 				A().Text("invite tree").Href("/").Class(navItemClass).Attr("hx-boost", "true", "hx-target", "main", "hx-select", "main"),
@@ -38,8 +48,11 @@ on load get cookies['nip98'] then if it is undefined set my innerText to "login"
 			).Class("flex flex-1 items-center justify-center"),
 			Main(inside).Class("m-4"),
 			P(
+			    Text("This is an very experimental Nostr relay"),
+			    Br(),
+			    A().Href("https://github.com/Sebastix/khatru-pyramid").Text("Sebastix/khatru-pyramid").Class("hover:underline cursor-pointer text-blue-500").Target("_blank"),
 				Text("powered by "),
-				A().Href("https://github.com/github-tijlxyz/khatru-pyramid").Text("khatru-pyramid").Class("hover:underline cursor-pointer text-blue-500"),
+				A().Href("https://github.com/github-tijlxyz/khatru-pyramid").Text("khatru-pyramid").Class("hover:underline cursor-pointer text-blue-500").Target("_blank"),
 			).Class("text-end my-4 text-sm"),
 		).Class("my-6 mx-auto max-w-min min-w-96"),
 	)

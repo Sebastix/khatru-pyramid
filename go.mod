@@ -30,6 +30,7 @@ require (
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.4.0 // indirect
 	github.com/graph-gophers/dataloader/v7 v7.1.0 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/greatroar/blobloom v0.8.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect
