@@ -28,6 +28,7 @@ func baseHTML(inside HTMLComponent) HTMLComponent {
 			).Class("mx-auto my-6 text-center"),
 			Nav(
 				A().Text("invite tree").Href("/").Class(navItemClass).Attr("hx-boost", "true", "hx-target", "main", "hx-select", "main"),
+				A().Text("browse").Href("/browse").Class(navItemClass),
 				A().Text("reports").Href("/reports").Class(navItemClass).Attr("hx-boost", "true", "hx-target", "main", "hx-select", "main"),
 				A().Text("").Href("#").Class(navItemClass).
 					Attr("_", `
@@ -85,7 +86,7 @@ func reportsPageHTML(ctx context.Context, params ReportsPageParams) HTMLComponen
 
 		if e := report.Tags.GetFirst([]string{"e", ""}); e != nil {
 			// event report
-			res, _ := sys.StoreRelay().QuerySync(ctx, nostr.Filter{IDs: []string{(*e)[1]}})
+			res, _ := sys.StoreRelay.QuerySync(ctx, nostr.Filter{IDs: []string{(*e)[1]}})
 			if len(res) == 0 {
 				sys.Store.DeleteEvent(ctx, report)
 				continue
@@ -111,7 +112,7 @@ func reportsPageHTML(ctx context.Context, params ReportsPageParams) HTMLComponen
 				primaryType = (*p)[2]
 			}
 
-			relatedProfile := sys.FetchOrStoreProfileMetadata(ctx, (*p)[1])
+			relatedProfile := sys.FetchProfileMetadata(ctx, (*p)[1])
 			relatedContent = Div(
 				Text("profile reported: "),
 				userNameComponent(relatedProfile),
