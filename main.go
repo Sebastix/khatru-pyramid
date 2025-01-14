@@ -78,7 +78,7 @@ func main() {
 	}
 	relay.Info.Software = "https://github.com/github-tijlxyz/khatru-pyramid"
 
-	policies.ApplySaneDefaults(relay)
+	//policies.ApplySaneDefaults(relay)
 
 	relay.StoreEvent = append(relay.StoreEvent, db.SaveEvent)
 	relay.QueryEvents = append(relay.QueryEvents, db.QueryEvents)
