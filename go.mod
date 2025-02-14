@@ -3,10 +3,9 @@ module github.com/github-tijlxyz/khatru-pyramid
 go 1.23.1
 
 require (
-	github.com/a-h/templ v0.3.819
 	github.com/fiatjaf/eventstore v0.16.0
 	github.com/fiatjaf/khatru v0.15.1
-  github.com/joho/godotenv v1.5.1
+	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/nbd-wtf/go-nostr v0.49.2
 	github.com/rs/zerolog v1.33.0

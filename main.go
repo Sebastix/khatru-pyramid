@@ -90,7 +90,7 @@ func main() {
 	relay.Info.Limitation = &nip11.RelayLimitationDocument{
 		RestrictedWrites: true,
 	}
-	relay.Info.Software = "https://github.com/github-tijlxyz/khatru-pyramid"
+	relay.Info.Software = "https://github.com/Sebastix/khatru-pyramid"
 
 	//policies.ApplySaneDefaults(relay)
 
