@@ -36,8 +36,19 @@ type Settings struct {
 }
 
 var (
-	s         Settings
-	db        = &lmdb.LMDBBackend{MaxLimit: 500}
+	s  Settings
+	db = &lmdb.LMDBBackend{
+		MaxLimit:           500,
+		MaxLimitNegentropy: 999999,
+		EnableHLLCacheFor: func(kind int) (useCache bool, skipSavingActualEvent bool) {
+			switch kind {
+			case 7:
+				return true, true
+			default:
+				return false, false
+			}
+		},
+	}
 	log       = zerolog.New(os.Stderr).Output(zerolog.ConsoleWriter{Out: os.Stdout}).With().Timestamp().Logger()
 	whitelist = make(Whitelist)
 	relay     = khatru.NewRelay()
@@ -57,6 +68,9 @@ func main() {
 		log.Fatal().Err(err).Msg("couldn't process envconfig")
 		return
 	}
+
+	// enable negentropy
+	relay.Negentropy = true
 
 	// load db
 	db.Path = s.DatabasePath
@@ -82,11 +96,13 @@ func main() {
 
 	relay.StoreEvent = append(relay.StoreEvent, db.SaveEvent)
 	relay.QueryEvents = append(relay.QueryEvents, db.QueryEvents)
+	relay.CountEventsHLL = append(relay.CountEventsHLL, db.CountEventsHLL)
+	relay.ReplaceEvent = append(relay.ReplaceEvent, db.ReplaceEvent)
 	relay.DeleteEvent = append(relay.DeleteEvent, db.DeleteEvent)
 	relay.RejectEvent = append(relay.RejectEvent,
 		policies.PreventLargeTags(100),
-		policies.PreventTooManyIndexableTags(8, []int{3, 10002}, nil),
-		policies.PreventTooManyIndexableTags(1000, nil, []int{3, 10002}),
+		policies.PreventTooManyIndexableTags(9, []int{3}, nil),
+		policies.PreventTooManyIndexableTags(1200, nil, []int{3}),
 		policies.RestrictToSpecifiedKinds(true, supportedKinds...),
 		rejectEventsFromUsersNotInWhitelist,
 		validateAndFilterReports,
@@ -112,6 +128,7 @@ func main() {
 	// http routes
 	relay.Router().HandleFunc("/add-to-whitelist", addToWhitelistHandler)
 	relay.Router().HandleFunc("/remove-from-whitelist", removeFromWhitelistHandler)
+	relay.Router().HandleFunc("/cleanup", cleanupStuffFromExcludedUsersHandler)
 	relay.Router().HandleFunc("/reports", reportsViewerHandler)
 	relay.Router().HandleFunc("/browse/", joubleHandler)
 	relay.Router().Handle("/static/", http.FileServer(http.FS(static)))

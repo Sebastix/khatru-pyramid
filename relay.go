@@ -10,7 +10,7 @@ func rejectEventsFromUsersNotInWhitelist(ctx context.Context, event *nostr.Event
 	if isPublicKeyInWhitelist(event.PubKey) {
 		return false, ""
 	}
-	if event.Kind == 1985 {
+	if event.Kind == 1984 {
 		// we accept reports from anyone (will filter them for relevance in the next function)
 		return false, ""
 	}
@@ -23,16 +23,24 @@ var supportedKinds = []uint16{
 	3,
 	5,
 	6,
+	7,
 	8,
 	9,
 	11,
 	16,
+	20,
+	21,
+	22,
 	818,
 	1040,
 	1063,
 	1111,
 	1984,
 	1985,
+	17375,
+	7375,
+	7376,
+	9321,
 	9735,
 	10000,
 	10001,
@@ -44,10 +52,12 @@ var supportedKinds = []uint16{
 	10007,
 	10009,
 	10015,
+	10019,
+	10030,
 	10050,
 	10101,
 	10102,
-	10030,
+	17375,
 	24133,
 	30000,
 	30002,
@@ -68,7 +78,7 @@ var supportedKinds = []uint16{
 }
 
 func validateAndFilterReports(ctx context.Context, event *nostr.Event) (reject bool, msg string) {
-	if event.Kind == 1985 {
+	if event.Kind == 1984 {
 		if e := event.Tags.GetFirst([]string{"e", ""}); e != nil {
 			// event report: check if the target event is here
 			res, _ := sys.StoreRelay.QuerySync(ctx, nostr.Filter{IDs: []string{(*e)[1]}})

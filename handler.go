@@ -6,14 +6,11 @@ import (
 
 	"github.com/nbd-wtf/go-nostr"
 	"github.com/nbd-wtf/go-nostr/nip19"
-	"github.com/theplant/htmlgo"
 )
 
 func inviteTreeHandler(w http.ResponseWriter, r *http.Request) {
-	content := inviteTreePageHTML(r.Context(), InviteTreePageParams{
-		loggedUser: getLoggedUser(r),
-	})
-	htmlgo.Fprint(w, baseHTML(content), r.Context())
+	loggedUser := getLoggedUser(r)
+	inviteTreePage(loggedUser).Render(r.Context(), w)
 }
 
 func addToWhitelistHandler(w http.ResponseWriter, r *http.Request) {
@@ -34,8 +31,7 @@ func addToWhitelistHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	content := inviteTreeComponent(r.Context(), "", loggedUser)
-	htmlgo.Fprint(w, content, r.Context())
+	inviteTreeComponent("", loggedUser).Render(r.Context(), w)
 }
 
 func removeFromWhitelistHandler(w http.ResponseWriter, r *http.Request) {
@@ -45,8 +41,42 @@ func removeFromWhitelistHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "failed to remove from whitelist: "+err.Error(), 500)
 		return
 	}
-	content := inviteTreeComponent(r.Context(), "", loggedUser)
-	htmlgo.Fprint(w, content, r.Context())
+	inviteTreeComponent("", loggedUser).Render(r.Context(), w)
+}
+
+// this deletes all events from users not in the relay anymore
+func cleanupStuffFromExcludedUsersHandler(w http.ResponseWriter, r *http.Request) {
+	loggedUser := getLoggedUser(r)
+	if loggedUser != s.RelayPubkey {
+		http.Error(w, "unauthorized, only the relay owner can do this", 403)
+		return
+	}
+
+	oldLimit := db.MaxLimit
+	db.MaxLimit = 999999
+	ch, err := db.QueryEvents(r.Context(), nostr.Filter{Limit: db.MaxLimit})
+	if err != nil {
+		http.Error(w, "failed to query", 500)
+		return
+	}
+	db.MaxLimit = oldLimit
+
+	count := 0
+
+	for evt := range ch {
+		if isPublicKeyInWhitelist(evt.PubKey) {
+			continue
+		}
+
+		if err := db.DeleteEvent(r.Context(), evt); err != nil {
+			http.Error(w, fmt.Sprintf(
+				"failed to delete %s: %s -- stopping, %d events were deleted before this error", evt, err, count), 500)
+			return
+		}
+		count++
+	}
+
+	fmt.Fprintf(w, "deleted %d events", count)
 }
 
 func reportsViewerHandler(w http.ResponseWriter, r *http.Request) {
@@ -59,11 +89,7 @@ func reportsViewerHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	content := reportsPageHTML(r.Context(), ReportsPageParams{
-		reports:    events,
-		loggedUser: getLoggedUser(r),
-	})
-	htmlgo.Fprint(w, content, r.Context())
+	reportsPage(events, getLoggedUser(r)).Render(r.Context(), w)
 }
 
 func joubleHandler(w http.ResponseWriter, r *http.Request) {
