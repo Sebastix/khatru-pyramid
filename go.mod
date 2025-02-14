@@ -5,7 +5,6 @@ go 1.23.1
 require (
 	github.com/fiatjaf/eventstore v0.16.0
 	github.com/fiatjaf/khatru v0.15.1
-	github.com/joho/godotenv v1.5.1
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/nbd-wtf/go-nostr v0.49.2
 	github.com/rs/zerolog v1.33.0
@@ -15,6 +14,7 @@ require (
 require (
 	fiatjaf.com/lib v0.2.0 // indirect
 	github.com/PowerDNS/lmdb-go v1.9.2 // indirect
+	github.com/a-h/templ v0.3.833 // indirect
 	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/bep/debounce v1.2.1 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4 // indirect

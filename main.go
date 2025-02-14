@@ -14,7 +14,6 @@ import (
 	"github.com/fiatjaf/khatru"
 	"github.com/fiatjaf/khatru/policies"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/joho/godotenv"
 	"github.com/nbd-wtf/go-nostr"
 	"github.com/nbd-wtf/go-nostr/nip11"
 	"github.com/rs/zerolog"
@@ -22,7 +21,7 @@ import (
 )
 
 type Settings struct {
-	Port             string `envconfig:"PORT" default:"3366"`
+	Port             string `envconfig:"RELAY_PORT" default:"3334"`
 	Domain           string `envconfig:"DOMAIN" required:"true"`
 	RelayName        string `envconfig:"RELAY_NAME" required:"true"`
 	RelayPubkey      string `envconfig:"RELAY_PUBKEY" required:"true"`
@@ -58,11 +57,6 @@ var (
 var static embed.FS
 
 func main() {
-	if err := godotenv.Load("./.env"); err != nil {
-		log.Fatal().Err(err).Msg("Error loading .env file")
-		return
-	}
-	s.Domain = os.Getenv("DOMAIN")
 	err := envconfig.Process("", &s)
 	if err != nil {
 		log.Fatal().Err(err).Msg("couldn't process envconfig")
